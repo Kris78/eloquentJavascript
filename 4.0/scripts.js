@@ -1,4 +1,4 @@
-var journal = [
+var JOURNAL = [
   {"events":["carrot","exercise","weekend"],"squirrel":false},
   {"events":["bread","pudding","brushed teeth","weekend","touched tree"],"squirrel":false},
   {"events":["carrot","nachos","brushed teeth","cycling","weekend"],"squirrel":false},
@@ -90,10 +90,10 @@ var journal = [
   {"events":["bread","brushed teeth","television","weekend"],"squirrel":false},
   {"events":["cauliflower","peanuts","brushed teeth","weekend"],"squirrel":false}
 ];
-//console.log(journal);
+console.log(JOURNAL);
 
 function addEntry(event, didIturnIntoASquirrel) {
-	journal.push({
+	JOURNAL.push({
 		events: event,
 		squirrel: didIturnIntoASquirrel
 	});
@@ -114,7 +114,7 @@ console.log(phi([76, 9, 4, 1]));
 function hasEvent(event, entry) {
 	return entry.events.indexOf(event) != -1;
 }
-//console.log(hasEvent("carrot", journal[1]));
+//console.log(hasEvent("carrot", JOURNAL[1]));
 
 
 function tableFor(event, journal) {
@@ -132,19 +132,64 @@ function tableFor(event, journal) {
 	}
 	return table;
 }
-console.log(tableFor("lasagna", journal));
+console.log(tableFor("lasagna", JOURNAL));
 
 
-var map = {};
-function storePhi(event, phi) {
-	map[event] = phi;
-};
 
-storePhi("pizza", 0.069);
+//var map = {};
+//function storePhi(event, phi) {
+//	map[event] = phi;
+//}
+//
+//storePhi("pizza", 0.069);
+//storePhi("touched tree", -0.081);
+//
+//console.log("pizza" in map);
+//console.log(map["touched tree"]);
+//
+//console.log(map);
+//
+//for (event in map)
+//	console.log("the correlation for the event '" + event + "' is " + map[event]);
 
 
-console.log(map);
 
+function gatherCorrelations(journal) {
+	var phis = {};
+	for (var entry = 0; entry < journal.length; entry++) {
+		var events = journal[entry].events;
+		for (var i = 0; i < events.length; i++) {
+			var event = events[i];
+			if (!(event in phis))
+				phis[event] = phi(tableFor(event, journal));
+		}
+	}
+	return phis;
+}
+
+
+var correlations = gatherCorrelations(JOURNAL);
+
+//console.log(gatherCorrelations(JOURNAL));
+console.log(correlations.pizza);
+
+
+for (event in correlations) {
+	var correlation = correlations[event]
+	if (correlation > 0.1 || correlation < -0.1)
+
+		console.log(event + " = " + correlations[event]);
+}
+
+
+for (var i = 0; i < JOURNAL.length; i++) {
+	var entry = JOURNAL[i];
+	if (hasEvent("peanuts", entry) && !hasEvent("brushed teeth", entry)) {
+		entry.events.push("peanuts teeth");
+	}
+}
+
+console.log(phi(tableFor("peanuts teeth", JOURNAL)));
 
 //addEntry(["carrot", "exercise", "weekend"], false)
 //addEntry(["pizza", "work", "car", "running"], true)
